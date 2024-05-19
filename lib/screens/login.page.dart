@@ -1,10 +1,10 @@
-// login_page.dart
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import './home_page.dart';
 import './register_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -33,10 +33,13 @@ class _LoginPageState extends State<LoginPage> {
         final token = data['token'];
         final userId = data['userId'];
 
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString('token', token);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(userId: userId.toString(), token: token),
+            builder: (context) => HomePage(),
           ),
         );
       } else {
@@ -121,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue), // Corrigido: MaterialStateProperty -> WidgetStateProperty
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
