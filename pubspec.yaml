@@ -23,7 +23,7 @@ dev_dependencies:
 
 flutter:
   assets:
-    - lib/assets/logo.svg
+    - assets/images/logo.png
 
   uses-material-design: true
 

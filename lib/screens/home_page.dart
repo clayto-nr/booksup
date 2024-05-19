@@ -4,30 +4,18 @@ class HomePage extends StatelessWidget {
   final String userId;
   final String token;
 
-  HomePage({required this.userId, required this.token});
+  const HomePage({Key? key, required this.userId, required this.token}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('Home Page'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Welcome, User ID: $userId',
-              style: TextStyle(fontSize: 24),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                // Implement logout logic here
-              },
-              child: Text('Logout'),
-            ),
-          ],
+        child: Text(
+          'Welcome, User ID: $userId, Token: $token',
+          style: TextStyle(fontSize: 24),
         ),
       ),
     );

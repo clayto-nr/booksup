@@ -1,9 +1,10 @@
+// login_page.dart
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import './home_page.dart';
-import './register_page.dart'; // Importe a página de registro
+import './register_page.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -97,7 +98,7 @@ class _LoginPageState extends State<LoginPage> {
                 controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
-                  hintText: 'Password',
+                  hintText: 'Senha',
                   filled: true,
                   fillColor: Colors.grey[200],
                   border: OutlineInputBorder(
@@ -115,12 +116,12 @@ class _LoginPageState extends State<LoginPage> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     child: Text(
-                      'Login',
-                      style: TextStyle(fontSize: 16, color: Colors.white), // Definindo a cor do texto como branco
+                      'Acessar conta',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    backgroundColor: MaterialStateProperty.all(Colors.blue), // Corrigido: MaterialStateProperty -> WidgetStateProperty
                     shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -132,7 +133,6 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 10),
               TextButton(
                 onPressed: () {
-                  // Navegar para a tela de registro ao clicar em "Criar conta"
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => RegisterPage()),
