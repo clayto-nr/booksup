@@ -5,6 +5,7 @@ import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
 import './register_page.dart';
+
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -30,7 +31,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (response.statusCode == 200 && data['token'] != null) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('token', data['token']); // Armazena o token localmente
+        await prefs.setString('token', data['token']);
 
         Navigator.pushReplacement(
           context,
@@ -120,8 +121,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(Colors.blue),
-                    shape: MaterialStateProperty.all(
+                    backgroundColor: WidgetStateProperty.all(Colors.blue),
+                    shape: WidgetStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

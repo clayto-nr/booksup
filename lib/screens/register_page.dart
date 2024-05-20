@@ -136,8 +136,8 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                 ),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(Colors.blue),
-                  shape: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(Colors.blue),
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
