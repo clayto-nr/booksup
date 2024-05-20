@@ -98,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.account_circle),
-            label: 'Conta',
+            label: 'Perfil',
           ),
         ],
         currentIndex: _selectedIndex,
