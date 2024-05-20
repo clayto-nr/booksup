@@ -73,12 +73,6 @@ class _MyHomePageState extends State<MyHomePage> {
     ContaPage(),
   ];
 
-  static final List<String> _titles = <String>[
-    'Home',
-    'Meus Livros',
-    'Conta',
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -89,7 +83,7 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(_titles[_selectedIndex]),
+        title: Text(''),  // Título vazio
       ),
       body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(

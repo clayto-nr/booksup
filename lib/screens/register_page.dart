@@ -78,7 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     )
                   : SizedBox(),
               Image.asset(
-                '../assets/logo.svg',
+                'assets/images/logo.png',
                 width: 150,
                 height: 150,
               ),
