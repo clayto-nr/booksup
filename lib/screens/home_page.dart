@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,11 +11,20 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   List<dynamic> books = [];
   List<dynamic> top3Books = [];
+  late int userId;
 
   @override
   void initState() {
     super.initState();
+    fetchUserId();
     fetchBooks();
+  }
+
+  Future<void> fetchUserId() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      userId = prefs.getInt('userId') ?? 0;
+    });
   }
 
   Future<void> fetchBooks() async {
@@ -23,9 +33,7 @@ class _HomePageState extends State<HomePage> {
     if (response.statusCode == 200) {
       setState(() {
         books = jsonDecode(response.body);
-        // Ordenar os livros por visualizações em ordem decrescente
         books.sort((a, b) => b['views'].compareTo(a['views']));
-        // Obter os 3 primeiros livros da lista ordenada (os mais vistos)
         top3Books = books.take(3).toList();
       });
     } else {
@@ -38,10 +46,6 @@ class _HomePageState extends State<HomePage> {
 
     if (response.statusCode == 200) {
       final bookDetails = jsonDecode(response.body);
-      // Incrementando as visualizações localmente
-      bookDetails['views']++;
-      // Atualizando a lista de livros com as visualizações atualizadas
-      updateBookInList(bookDetails);
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -50,17 +54,6 @@ class _HomePageState extends State<HomePage> {
       );
     } else {
       print('Erro ao buscar detalhes do livro: ${response.statusCode}');
-    }
-  }
-
-  void updateBookInList(Map<String, dynamic> updatedBook) {
-    final int index = books.indexWhere((book) => book['id'] == updatedBook['id']);
-    if (index != -1) {
-      setState(() {
-        books[index] = updatedBook;
-        // Atualizar a lista top 3 também
-        top3Books = books.take(3).toList();
-      });
     }
   }
 
@@ -129,16 +122,57 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class BookDetailsPage extends StatelessWidget {
+class BookDetailsPage extends StatefulWidget {
   final Map<String, dynamic> bookDetails;
 
   const BookDetailsPage({Key? key, required this.bookDetails}) : super(key: key);
 
   @override
+  _BookDetailsPageState createState() => _BookDetailsPageState();
+}
+
+class _BookDetailsPageState extends State<BookDetailsPage> {
+  List<dynamic> comments = [];
+  late TextEditingController commentController;
+
+  @override
+  void initState() {
+    super.initState();
+    fetchBookComments();
+    commentController = TextEditingController();
+  }
+
+  Future<void> fetchBookComments() async {
+    final response = await http.get(Uri.parse('https://reabix-api.com/books/${widget.bookDetails['id']}/comments'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        comments = jsonDecode(response.body);
+      });
+    } else {
+      print('Erro ao buscar comentários: ${response.statusCode}');
+    }
+  }
+
+  Future<void> postComment(String comment) async {
+    final response = await http.post(
+      Uri.parse('https://reabix-api.com/books/${widget.bookDetails['id']}/comments'),
+      body: {'comment': comment},
+    );
+
+    if (response.statusCode == 200) {
+      // Atualiza a lista de comentários
+      fetchBookComments();
+    } else {
+      print('Erro ao adicionar comentário: ${response.statusCode}');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(bookDetails['name']),
+        title: Text(widget.bookDetails['name']),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -151,17 +185,57 @@ class BookDetailsPage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            Text(bookDetails['description']),
+            Text(widget.bookDetails['description']),
             SizedBox(height: 16),
             Text(
-              'Visualizações: ${bookDetails['views']}',
+              'Visualizações: ${widget.bookDetails['views']}',
               style: TextStyle(
                 fontWeight: FontWeight.bold,
               ),
+            ),
+            SizedBox(height: 16),
+            Text(
+              'Comentários:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount: comments.length,
+                itemBuilder: (context, index) {
+                  final comment = comments[index];
+                  return ListTile(
+                    title: Text(comment['comment']),
+                    subtitle: Text('Usuário: ${comment['username']}'),
+                  );
+                },
+              ),
+            ),
+            SizedBox(height: 16),
+            TextField(
+              controller: commentController,
+              decoration: InputDecoration(
+                hintText: 'Digite seu comentário...',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: () {
+                postComment(commentController.text);
+              },
+              child: Text('Comentar'),
             ),
           ],
         ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: HomePage(),
+  ));
 }
