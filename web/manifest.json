@@ -1,6 +1,6 @@
 {
-    "name": "bookup",
-    "short_name": "bookup",
+    "name": "booksup",
+    "short_name": "booksup",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

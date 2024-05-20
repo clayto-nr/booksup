@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../main.dart';
@@ -40,28 +39,22 @@ class _LoginPageState extends State<LoginPage> {
           ),
         );
       } else {
-        Fluttertoast.showToast(
-          msg: 'Erro ao fazer login: ${data['message'] ?? 'Credenciais inválidas'}',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 1,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0,
-        );
+        _showErrorSnackbar(data['message'] ?? 'Erro ao fazer login');
       }
     } catch (error) {
       print('Erro ao fazer login: $error');
-      Fluttertoast.showToast(
-        msg: 'Erro ao fazer login',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+      _showErrorSnackbar('Erro ao fazer login');
     }
+  }
+
+  void _showErrorSnackbar(String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: Duration(seconds: 3),
+        backgroundColor: Colors.red,
+      ),
+    );
   }
 
   @override
@@ -121,8 +114,8 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ),
                   style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all(Colors.blue),
-                    shape: WidgetStateProperty.all(
+                    backgroundColor: MaterialStateProperty.all(Colors.blue),
+                    shape: MaterialStateProperty.all(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),

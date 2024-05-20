@@ -69,7 +69,7 @@ class _ContaPageState extends State<ContaPage> {
                 children: [
                   CircleAvatar(
                     radius: 40,
-                    backgroundImage: AssetImage('assets/avatar.jpg'), // Substitua pelo caminho da imagem
+                    backgroundImage: AssetImage('assets/images/logo.png'), // Substitua pelo caminho da imagem
                   ),
                   SizedBox(width: 20),
                   Column(
