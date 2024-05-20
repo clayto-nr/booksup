@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:books/screens/home_page.dart';
-import 'package:books/screens/livros_page.dart';
-import 'package:books/screens/conta_page.dart';
-import 'package:books/screens/login.page.dart';
+import 'package:bookup/screens/home_page.dart';
+import 'package:bookup/screens/livros_page.dart';
+import 'package:bookup/screens/conta_page.dart';
+import 'package:bookup/screens/login.page.dart';
 
 void main() {
   runApp(MyApp());
