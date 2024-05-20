@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'book_details_page.dart'; // Importando o arquivo das detalhes do livro
 
 class HomePage extends StatefulWidget {
   @override
@@ -48,8 +49,20 @@ class _HomePageState extends State<HomePage> {
       final bookDetails = jsonDecode(response.body);
       Navigator.push(
         context,
-        MaterialPageRoute(
-          builder: (context) => BookDetailsPage(bookDetails: bookDetails),
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => BookDetailsPage(bookDetails: bookDetails),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(1.0, 0.0);
+            const end = Offset.zero;
+            const curve = Curves.ease;
+
+            var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: child,
+            );
+          },
         ),
       );
     } else {
@@ -117,118 +130,6 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class BookDetailsPage extends StatefulWidget {
-  final Map<String, dynamic> bookDetails;
-
-  const BookDetailsPage({Key? key, required this.bookDetails}) : super(key: key);
-
-  @override
-  _BookDetailsPageState createState() => _BookDetailsPageState();
-}
-
-class _BookDetailsPageState extends State<BookDetailsPage> {
-  List<dynamic> comments = [];
-  late TextEditingController commentController;
-
-  @override
-  void initState() {
-    super.initState();
-    fetchBookComments();
-    commentController = TextEditingController();
-  }
-
-  Future<void> fetchBookComments() async {
-    final response = await http.get(Uri.parse('https://reabix-api.com/books/${widget.bookDetails['id']}/comments'));
-
-    if (response.statusCode == 200) {
-      setState(() {
-        comments = jsonDecode(response.body);
-      });
-    } else {
-      print('Erro ao buscar comentários: ${response.statusCode}');
-    }
-  }
-
-  Future<void> postComment(String comment) async {
-    final response = await http.post(
-      Uri.parse('https://reabix-api.com/books/${widget.bookDetails['id']}/comments'),
-      body: {'comment': comment},
-    );
-
-    if (response.statusCode == 200) {
-      // Atualiza a lista de comentários
-      fetchBookComments();
-    } else {
-      print('Erro ao adicionar comentário: ${response.statusCode}');
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.bookDetails['name']),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Descrição:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Text(widget.bookDetails['description']),
-            SizedBox(height: 16),
-            Text(
-              'Visualizações: ${widget.bookDetails['views']}',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 16),
-            Text(
-              'Comentários:',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: comments.length,
-                itemBuilder: (context, index) {
-                  final comment = comments[index];
-                  return ListTile(
-                    title: Text(comment['comment']),
-                    subtitle: Text('Usuário: ${comment['username']}'),
-                  );
-                },
-              ),
-            ),
-            SizedBox(height: 16),
-            TextField(
-              controller: commentController,
-              decoration: InputDecoration(
-                hintText: 'Digite seu comentário...',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: () {
-                postComment(commentController.text);
-              },
-              child: Text('Comentar'),
-            ),
-          ],
-        ),
       ),
     );
   }

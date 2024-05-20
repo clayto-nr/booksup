@@ -25,7 +25,7 @@ class _ContaPageState extends State<ContaPage> {
 
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? token = prefs.getString('token');
-    
+
     if (token != null) {
       final response = await http.get(
         Uri.parse(apiUrl),
@@ -50,7 +50,7 @@ class _ContaPageState extends State<ContaPage> {
     Navigator.pushAndRemoveUntil(
       context,
       MaterialPageRoute(builder: (context) => LoginPage()),
-      (Route<dynamic> route) => false,
+          (Route<dynamic> route) => false,
     );
   }
 
