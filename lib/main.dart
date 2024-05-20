@@ -10,6 +10,8 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,6 +25,8 @@ class MyApp extends StatelessWidget {
 }
 
 class InitialPage extends StatefulWidget {
+  const InitialPage({Key? key}) : super(key: key);
+
   @override
   _InitialPageState createState() => _InitialPageState();
 }
@@ -54,6 +58,8 @@ class _InitialPageState extends State<InitialPage> {
 }
 
 class MyHomePage extends StatefulWidget {
+  const MyHomePage({Key? key}) : super(key: key);
+
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -61,13 +67,13 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
-  static List<Widget> _widgetOptions = <Widget>[
+  static final List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     LivrosPage(),
     ContaPage(),
   ];
 
-  static List<String> _titles = <String>[
+  static final List<String> _titles = <String>[
     'Home',
     'Meus Livros',
     'Conta',
@@ -85,7 +91,7 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(_titles[_selectedIndex]),
       ),
-      body: _widgetOptions.elementAt(_selectedIndex),
+      body: _widgetOptions[_selectedIndex],
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
