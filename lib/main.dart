@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:books/screens/livros_page.dart';
-import 'package:books/screens/conta_page.dart'; // Importando ContaPage
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:books/screens/home_page.dart';
+import 'package:books/screens/livros_page.dart';
+import 'package:books/screens/conta_page.dart';
+import 'package:books/screens/login.page.dart';
 
 void main() {
   runApp(MyApp());
@@ -15,14 +17,43 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: MyHomePage(),
+      home: InitialPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key? key}) : super(key: key);
+class InitialPage extends StatefulWidget {
+  @override
+  _InitialPageState createState() => _InitialPageState();
+}
 
+class _InitialPageState extends State<InitialPage> {
+  String? token;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkLoginStatus();
+  }
+
+  Future<void> _checkLoginStatus() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token');
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (token == null) {
+      return LoginPage();
+    } else {
+      return MyHomePage();
+    }
+  }
+}
+
+class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
@@ -33,7 +64,7 @@ class _MyHomePageState extends State<MyHomePage> {
   static List<Widget> _widgetOptions = <Widget>[
     HomePage(),
     LivrosPage(),
-    ContaPage(token: 'seu_token_aqui'), // Passando o token para a página de conta
+    ContaPage(),
   ];
 
   static List<String> _titles = <String>[

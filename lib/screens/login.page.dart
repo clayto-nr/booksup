@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'dart:convert';
-import './home_page.dart';
-import './register_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import '../main.dart';
+import './register_page.dart';
 class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -29,17 +28,14 @@ class _LoginPageState extends State<LoginPage> {
 
       final data = jsonDecode(response.body);
 
-      if (data['token'] != null) {
-        final token = data['token'];
-        final userId = data['userId'];
-
-        SharedPreferences prefs = await SharedPreferences.getInstance();
-        prefs.setString('token', token);
+      if (response.statusCode == 200 && data['token'] != null) {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('token', data['token']); // Armazena o token localmente
 
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => HomePage(),
+            builder: (context) => MyHomePage(),
           ),
         );
       } else {
