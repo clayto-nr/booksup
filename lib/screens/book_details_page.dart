@@ -23,7 +23,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
   }
 
   Future<void> fetchBookComments() async {
-    final response = await http.get(Uri.parse('https://reabix-api.com/books/${widget.bookDetails['id']}/comments'));
+    final response = await http.get(Uri.parse('https://reabix-api.com/comment/${widget.bookDetails['id']}'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -44,7 +44,7 @@ class _BookDetailsPageState extends State<BookDetailsPage> {
     }
 
     final response = await http.post(
-      Uri.parse('https://reabix-api.com/books/${widget.bookDetails['id']}/comments'),
+      Uri.parse('https://reabix-api.com/comment/${widget.bookDetails['id']}'),
       headers: {
         'Content-Type': 'application/json',
         'Authorization': 'Bearer $token',

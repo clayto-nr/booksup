@@ -4,6 +4,7 @@ import 'package:booksup/screens/home_page.dart';
 import 'package:booksup/screens/livros_page.dart';
 import 'package:booksup/screens/conta_page.dart';
 import 'package:booksup/screens/login.page.dart';
+import 'package:booksup/custom_navigation_bar.dart'; // Adicione esta linha
 
 void main() {
   runApp(MyApp());
@@ -33,6 +34,7 @@ class InitialPage extends StatefulWidget {
 
 class _InitialPageState extends State<InitialPage> {
   String? token;
+  bool _isLoading = true;
 
   @override
   void initState() {
@@ -44,15 +46,18 @@ class _InitialPageState extends State<InitialPage> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       token = prefs.getString('token');
+      _isLoading = false;
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (token == null) {
-      return LoginPage();
+    if (_isLoading) {
+      return Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     } else {
-      return MyHomePage();
+      return token == null ? LoginPage() : MyHomePage();
     }
   }
 }
@@ -67,12 +72,6 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   int _selectedIndex = 0;
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    HomePage(),
-    LivrosPage(),
-    ContaPage(),
-  ];
-
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -81,30 +80,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(''),  // Título vazio
-      ),
-      body: _widgetOptions[_selectedIndex],
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.book),
-            label: 'Meus Livros',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_circle),
-            label: 'Perfil',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
-        onTap: _onItemTapped,
-      ),
+    return CustomNavigationBar(
+      onItemTapped: _onItemTapped,
+      selectedIndex: _selectedIndex,
     );
   }
 }

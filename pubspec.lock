@@ -86,6 +86,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.2"
+  flutter_neumorphic:
+    dependency: "direct main"
+    description:
+      name: flutter_neumorphic
+      sha256: "02606d937a3ceaa497b8a7c25f3efa95188bf93d77ebf0bd6552e432db4c2ec6"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.2.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
